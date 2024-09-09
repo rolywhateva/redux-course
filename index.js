@@ -31,14 +31,16 @@ const  addGoal = {
 
 //Reducer function 
 function todos( state=[], action) {
-    if(action.type === addTodo.type) {
-        return state.concat([action.todo])
+    switch(action.type) {
+        case 'ADD_TODO':  return state.concat([action.todo])
+        case 'REMOVE_TODO':  return state.filter(todo=> todo.id !== action.id);
+        case 'UPDATE_TODO':  return state.filter(todo=> todo.id!== action.id ? todo: action.todo);
+        case 'TOGGLE_TODO':  return  state.map(todo=> todo.id !== action.id? todo: {...todo,complete:!todo.complete});
+        default: return state;
     }
-
-    return state;
 }
 
-function createStore() {
+function createStore(reducer) {
     // 1. the state 
      let state;
 
@@ -59,7 +61,7 @@ function createStore() {
     // 4. update the state 
     const dispatch = (action) => {
         //call todos
-        state = todos(state,action)
+        state = reducer(state,action)
 
         // loop over listeners and invoke them 
         listeners.forEach(l=>l(state));
@@ -73,7 +75,7 @@ function createStore() {
     }
 }
 
-const store = createStore();
+const store = createStore(todos);
 
 const unsubscribe1 = store.subscribe((newValue)=>console.log("listener number 1 receives new value",newValue));
 const unsubscribe2 = store.subscribe((newValue)=>console.log("listener number 2 receives new value",newValue));
