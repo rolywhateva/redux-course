@@ -25,7 +25,7 @@ function addTodoToDOM(todo) {
   });
 
   const removeBtn = createRemoveButton(() =>
-    store.dispatch(todoActionCreators.remove(todo.id))
+    store.disaptch(todoActionCreators.remove(todo.id))
   );
   node.appendChild(removeBtn);
   document.getElementById("todos").appendChild(node);
@@ -67,6 +67,7 @@ store.subscribe(() => {
 
   document.getElementById("todos").innerHTML = "";
   document.getElementById("goals").innerHTML = "";
+
   goals.forEach(addGoalToDOM);
   todos.forEach(addTodoToDOM);
 });
