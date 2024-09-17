@@ -9,6 +9,7 @@ const ACTIONS = {
     ADD_GOAL: "ADD_GOAL",
     REMOVE_GOAL: "REMOVE_GOAL",
   },
+  RECIEVE_DATA:'RECIEVE_DATA'
 };
 
 const todoActionCreators = {
@@ -20,8 +21,10 @@ const todoActionCreators = {
 
 const goalActionCreators = {
   add: (goal) => ({ type: ACTIONS.GOALS.ADD_GOAL, goal }),
-  remove: (id) => ({ type: ACTIONS.TODOS.REMOVE_TODO, id }),
+  remove: (id) => ({ type: ACTIONS.GOALS.REMOVE_GOAL, id }),
 };
+
+const recieveDataActionCreator = (goals,todos)=>({type:ACTIONS.RECIEVE_DATA,goals,todos});
 
 function addTodoAction(todo) {
   return {
@@ -36,6 +39,8 @@ function goals(state = [], action) {
       return state.concat([action.goal]);
     case ACTIONS.GOALS.REMOVE_GOAL:
       return state.filter((todo) => todo.id !== action.id);
+    case ACTIONS.RECIEVE_DATA: 
+      return action.goals;
     default:
       return state;
   }
@@ -56,10 +61,13 @@ function todos(state = [], action) {
       return state.map((todo) =>
         todo.id !== action.id ? todo : { ...todo, complete: !todo.complete }
       );
+    case ACTIONS.RECIEVE_DATA: 
+       return action.todos;
     default:
       return state;
   }
 }
+
 
 function app(state = {}, action) {
   return {
@@ -109,7 +117,6 @@ const checker = (store) => (next) => (action) => {
 };
 
 const logger = store=>next=>action=>{
-
     console.group(action.type);
     console.log('The action:', action);
     const result = next(action);
