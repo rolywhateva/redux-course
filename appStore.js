@@ -68,12 +68,12 @@ function todos(state = [], action) {
   }
 }
 
-
-function app(state = {}, action) {
-  return {
-    todos: todos(state.todos, action),
-    goals: goals(state.goals, action),
-  };
+function loading (state = true, action) {
+  switch (action.type) {
+    case ACTIONS.RECIEVE_DATA: 
+    return false; 
+    default: return state;
+  }
 }
 
 // function checker(store) {
@@ -126,6 +126,6 @@ const logger = store=>next=>action=>{
 };
 
 const store = Redux.createStore(
-  Redux.combineReducers({ todos, goals }),
+  Redux.combineReducers({ todos, goals, loading }),
   Redux.applyMiddleware(checker,logger)
 );

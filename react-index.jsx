@@ -26,20 +26,38 @@ function List(props) {
 class Todos extends React.Component {
   addItem = (e) => {
     e.preventDefault();
-    const name = this.input.value;
-    this.input.value = "";
 
-    this.props.store.dispatch(
-      todoActionCreators.add({ id: generateUniqueId(), name, complete: false })
-    );
+    return API.saveTodo(this.input.value)
+      .then((newTodo) => {
+        this.props.store.dispatch(todoActionCreators.add(newTodo));
+
+        this.input.value = "";
+      })
+      .catch(() => alert("There was an error ,try again"));
   };
 
   removeItem = (item) => {
     this.props.store.dispatch(todoActionCreators.remove(item.id));
+
+    return API.deleteTodo(item.id).catch((reason) => {
+      console.error(reason);
+
+      alert("An error occured, try again");
+
+      this.props.store.dispatch(todoActionCreators.add(item));
+    });
   };
 
   toggleItem = (item) => {
     this.props.store.dispatch(todoActionCreators.toggle(item.id));
+
+    return API.saveTodoToggle(item.id).catch((reason) => {
+      console.error(reason);
+
+      alert("An error occured,  try again!");
+
+      this.props.store.dispatch(todoActionCreators.toggle(item.id));
+    });
   };
 
   render() {
@@ -68,16 +86,23 @@ class Todos extends React.Component {
 class Goals extends React.Component {
   addItem = (e) => {
     e.preventDefault();
-    const name = this.input.value;
-    this.input.value = "";
 
-    this.props.store.dispatch(
-      goalActionCreators.add({ id: generateUniqueId(), name, complete: false })
-    );
+    return API.saveGoal(this.input.value)
+      .then((newGoal) => {
+        this.props.store.dispatch(goalActionCreators.add(newGoal));
+        this.input.value = "";
+      })
+      .catch(() => alert("Something went wrong, please try again!"));
   };
 
   removeItem = (item) => {
     this.props.store.dispatch(goalActionCreators.remove(item.id));
+
+    return API.deleteGoal(item.id).catch((reason) => {
+      console.error(reason);
+      alert("Something went wrong, please try again!");
+      this.props.store.dispatch(goalActionCreators.add(item));
+    });
   };
 
   render() {
@@ -102,16 +127,21 @@ class App extends React.Component {
   componentDidMount() {
     const { store } = this.props;
 
-    store.subscribe(() => {
-      this.forceUpdate();
-    });
     Promise.all([API.fetchTodos(), API.fetchGoals()]).then(([todos, goals]) => {
       store.dispatch(recieveDataActionCreator(goals, todos));
+    });
+
+    store.subscribe(() => {
+      this.forceUpdate();
     });
   }
 
   render() {
-    const { todos, goals } = this.props.store.getState();
+    const { todos, goals, loading } = this.props.store.getState();
+
+    if (loading) {
+      return <h3> Loading...</h3>;
+    }
 
     return (
       <div>
