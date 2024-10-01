@@ -37,15 +37,7 @@ class Todos extends React.Component {
   };
 
   removeItem = (item) => {
-    this.props.store.dispatch(todoActionCreators.remove(item.id));
-
-    return API.deleteTodo(item.id).catch((reason) => {
-      console.error(reason);
-
-      alert("An error occured, try again");
-
-      this.props.store.dispatch(todoActionCreators.add(item));
-    });
+    this.props.store.dispatch(todoActionCreators.handleDeleteTodo(item));
   };
 
   toggleItem = (item) => {
@@ -87,22 +79,15 @@ class Goals extends React.Component {
   addItem = (e) => {
     e.preventDefault();
 
-    return API.saveGoal(this.input.value)
-      .then((newGoal) => {
-        this.props.store.dispatch(goalActionCreators.add(newGoal));
+    this.props.store.dispatch(
+      goalActionCreators.handleAddGoal(this.input.value, () => {
         this.input.value = "";
       })
-      .catch(() => alert("Something went wrong, please try again!"));
+    );
   };
 
   removeItem = (item) => {
-    this.props.store.dispatch(goalActionCreators.remove(item.id));
-
-    return API.deleteGoal(item.id).catch((reason) => {
-      console.error(reason);
-      alert("Something went wrong, please try again!");
-      this.props.store.dispatch(goalActionCreators.add(item));
-    });
+    this.props.store.dispatch(goalActionCreators.handleDeleteGoal(item));
   };
 
   render() {
@@ -127,9 +112,7 @@ class App extends React.Component {
   componentDidMount() {
     const { store } = this.props;
 
-    Promise.all([API.fetchTodos(), API.fetchGoals()]).then(([todos, goals]) => {
-      store.dispatch(recieveDataActionCreator(goals, todos));
-    });
+    store.dispatch(handleInitialData());
 
     store.subscribe(() => {
       this.forceUpdate();

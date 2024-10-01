@@ -9,7 +9,49 @@ const ACTIONS = {
     ADD_GOAL: "ADD_GOAL",
     REMOVE_GOAL: "REMOVE_GOAL",
   },
-  RECIEVE_DATA:'RECIEVE_DATA'
+  RECIEVE_DATA: "RECIEVE_DATA",
+};
+
+const handleInitialData = () => (dispatch) =>
+  Promise.all([API.fetchTodos(), API.fetchGoals()]).then(([todos, goals]) => {
+    dispatch(recieveDataActionCreator(goals, todos));
+  });
+
+const handleDeleteTodo = (todo) => {
+  return (dispatch) => {
+    dispatch(todoActionCreators.remove(todo.id));
+
+    return API.deleteTodo(todo.id).catch((reason) => {
+      console.error(reason);
+
+      alert("An error occured, try again");
+
+      dispatch(todoActionCreators.add(todo));
+    });
+  };
+};
+
+const handleDeleteGoal = (goal) => {
+  return (dispatch) => {
+    dispatch(goalActionCreators.remove(goal.id));
+
+    return API.deleteGoal(goal.id).catch((reason) => {
+      console.error(reason);
+      alert("Something went wrong, please try again!");
+      this.props.store.dispatch(goalActionCreators.add(goal));
+    });
+  };
+};
+
+const handleAddGoal = (name, cb) => {
+  return (dispatch) => {
+    return API.saveGoal(name)
+      .then((newGoal) => {
+        dispatch(goalActionCreators.add(newGoal));
+        cb();
+      })
+      .catch(() => alert("Something went wrong, please try again!"));
+  };
 };
 
 const todoActionCreators = {
@@ -17,14 +59,21 @@ const todoActionCreators = {
   remove: (id) => ({ type: ACTIONS.TODOS.REMOVE_TODO, id }),
   update: (id, todo) => ({ type: ACTIONS.TODOS.UPDATE_TODO, id, todo }),
   toggle: (id) => ({ type: ACTIONS.TODOS.TOGGLE_TODO, id }),
+  handleDeleteTodo,
 };
 
 const goalActionCreators = {
   add: (goal) => ({ type: ACTIONS.GOALS.ADD_GOAL, goal }),
   remove: (id) => ({ type: ACTIONS.GOALS.REMOVE_GOAL, id }),
+  handleDeleteGoal,
+  handleAddGoal,
 };
 
-const recieveDataActionCreator = (goals,todos)=>({type:ACTIONS.RECIEVE_DATA,goals,todos});
+const recieveDataActionCreator = (goals, todos) => ({
+  type: ACTIONS.RECIEVE_DATA,
+  goals,
+  todos,
+});
 
 function addTodoAction(todo) {
   return {
@@ -39,7 +88,7 @@ function goals(state = [], action) {
       return state.concat([action.goal]);
     case ACTIONS.GOALS.REMOVE_GOAL:
       return state.filter((todo) => todo.id !== action.id);
-    case ACTIONS.RECIEVE_DATA: 
+    case ACTIONS.RECIEVE_DATA:
       return action.goals;
     default:
       return state;
@@ -61,18 +110,19 @@ function todos(state = [], action) {
       return state.map((todo) =>
         todo.id !== action.id ? todo : { ...todo, complete: !todo.complete }
       );
-    case ACTIONS.RECIEVE_DATA: 
-       return action.todos;
+    case ACTIONS.RECIEVE_DATA:
+      return action.todos;
     default:
       return state;
   }
 }
 
-function loading (state = true, action) {
+function loading(state = true, action) {
   switch (action.type) {
-    case ACTIONS.RECIEVE_DATA: 
-    return false; 
-    default: return state;
+    case ACTIONS.RECIEVE_DATA:
+      return false;
+    default:
+      return state;
   }
 }
 
@@ -116,16 +166,24 @@ const checker = (store) => (next) => (action) => {
   return next(action);
 };
 
-const logger = store=>next=>action=>{
-    console.group(action.type);
-    console.log('The action:', action);
-    const result = next(action);
-    console.log('The new state:',store.getState());
-    console.groupEnd();
-    return result;
+const logger = (store) => (next) => (action) => {
+  console.group(action.type);
+  console.log("The action:", action);
+  const result = next(action);
+  console.log("The new state:", store.getState());
+  console.groupEnd();
+  return result;
+};
+
+const thunk = (store) => (next) => (action) => {
+  if (typeof action === "function") {
+    return action(store.dispatch);
+  }
+
+  return next(action);
 };
 
 const store = Redux.createStore(
   Redux.combineReducers({ todos, goals, loading }),
-  Redux.applyMiddleware(checker,logger)
+  Redux.applyMiddleware(checker, logger, ReduxThunk.default)
 );
