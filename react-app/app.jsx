@@ -1,16 +1,10 @@
 class App extends React.Component {
   componentDidMount() {
-    const { store } = this.props;
-
-    store.dispatch(handleInitialData());
-
-    store.subscribe(() => {
-      this.forceUpdate();
-    });
+    this.props.dispatch(handleInitialData());
   }
 
   render() {
-    const {  loading } = this.props.store.getState();
+    const { loading } = this.props;
 
     if (loading) {
       return <h3> Loading...</h3>;
@@ -19,6 +13,7 @@ class App extends React.Component {
     return (
       <div>
         <h1> React app </h1>
+
         <ConnectedTodos />
 
         <ConnectedGoals />
@@ -27,13 +22,11 @@ class App extends React.Component {
   }
 }
 
-class ConnectedApp extends React.Component {
-  render() {
-    return (
-      <Context.Consumer>{(store) => <App store={store} />}</Context.Consumer>
-    );
-  }
-}
+
+const ConnectedApp = connect((state) => ({
+  loading: state.loading,
+}))(App);
+
 
 ReactDOM.render(
   <Provider store={store}>

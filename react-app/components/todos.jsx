@@ -50,16 +50,4 @@ class Todos extends React.Component {
   }
 }
 
-class ConnectedTodos extends React.Component {
-  render() {
-    return (
-      <Context.Consumer>
-        {(store) => {
-          const { todos } = store.getState();
-
-          return <Todos todos={todos} dispatch={store.dispatch} />;
-        }}
-      </Context.Consumer>
-    );
-  }
-}
+const ConnectedTodos = connect(state=>({todos:state.todos}))(Todos);
