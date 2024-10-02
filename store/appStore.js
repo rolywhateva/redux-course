@@ -38,7 +38,7 @@ const handleDeleteGoal = (goal) => {
     return API.deleteGoal(goal.id).catch((reason) => {
       console.error(reason);
       alert("Something went wrong, please try again!");
-      this.props.store.dispatch(goalActionCreators.add(goal));
+      dispatch(goalActionCreators.add(goal));
     });
   };
 };

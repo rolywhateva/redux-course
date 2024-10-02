@@ -2,7 +2,7 @@ class Goals extends React.Component {
     addItem = (e) => {
       e.preventDefault();
   
-      this.props.store.dispatch(
+      this.props.dispatch(
         goalActionCreators.handleAddGoal(this.input.value, () => {
           this.input.value = "";
         })
@@ -10,7 +10,7 @@ class Goals extends React.Component {
     };
   
     removeItem = (item) => {
-      this.props.store.dispatch(goalActionCreators.handleDeleteGoal(item));
+      this.props.dispatch(goalActionCreators.handleDeleteGoal(item));
     };
   
     render() {
@@ -30,3 +30,15 @@ class Goals extends React.Component {
       );
     }
   }
+
+  class ConnectedGoals extends React.Component {
+    render() {
+     return <Context.Consumer>
+       {(store)=>{
+         const {goals} = store.getState();
+ 
+         return <Goals goals={goals} dispatch={store.dispatch}/>
+       }}
+     </Context.Consumer>
+    }
+ }

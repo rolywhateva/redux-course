@@ -10,7 +10,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { todos, goals, loading } = this.props.store.getState();
+    const {  loading } = this.props.store.getState();
 
     if (loading) {
       return <h3> Loading...</h3>;
@@ -19,12 +19,25 @@ class App extends React.Component {
     return (
       <div>
         <h1> React app </h1>
-        <Todos todos={todos} store={this.props.store} />
+        <ConnectedTodos />
 
-        <Goals goals={goals} store={this.props.store} />
+        <ConnectedGoals />
       </div>
     );
   }
 }
 
-ReactDOM.render(<App store={store} />, document.getElementById("app"));
+class ConnectedApp extends React.Component {
+  render() {
+    return (
+      <Context.Consumer>{(store) => <App store={store} />}</Context.Consumer>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Provider store={store}>
+    <ConnectedApp />
+  </Provider>,
+  document.getElementById("app")
+);
