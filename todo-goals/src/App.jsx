@@ -2,7 +2,7 @@ import  React  from "react";
 
 import {connect} from "react-redux";
 
-import { handleInitialData } from "./store/actions";
+import { handleInitialData } from "./store/actions/index";
 
 import { ConnectedTodos } from "./components/todos";
 import { ConnectedGoals } from "./components/goals";

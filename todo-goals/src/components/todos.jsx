@@ -1,6 +1,6 @@
 import  React  from "react";
 import API from "goals-todos-api";
-import { todoActionCreators } from "../store/actions";
+import { todoActionCreators } from "../store/actions/index";
 import { List } from "./list";
 import  {connect}  from "react-redux";
 

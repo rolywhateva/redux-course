@@ -1,5 +1,5 @@
 import React from "react";
-import { goalActionCreators } from "../store/actions";
+import { goalActionCreators } from "../store/actions/index";
 import {List} from "./list";
 import {connect} from "react-redux";
 
