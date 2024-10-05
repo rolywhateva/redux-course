@@ -1,8 +1,11 @@
+/* eslint-disable no-unused-vars */
 import './App.css'
 import {useSelector,useDispatch} from 'react-redux';
+import { BrowserRouter as Router  } from 'react-router-dom';
 import { handleInitialData } from './actions/shared';
 import { useEffect } from 'react';
-
+import Leaderboard from "./components/Leaderboard";
+import Dashboard from './components/Dashboard';
 function App() {
   const dispatch = useDispatch();
   const loading = useSelector((state)=>state.authedUser == null);
@@ -12,11 +15,13 @@ function App() {
   },[dispatch]);
 
   return (
+    <Router>
     <div className='container'>
     {
-      loading === true ? null: <div> Redux Polls </div>
+      loading === true ? null: <div> Redux Polls <Dashboard/> </div>
     }
     </div>
+    </Router>
   )
 }
 
