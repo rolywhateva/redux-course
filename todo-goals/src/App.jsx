@@ -1,36 +1,54 @@
-import  React  from "react";
+import  { useEffect } from "react";
 
-import {connect} from "react-redux";
+import {  useDispatch, useSelector } from "react-redux";
 
 import { handleInitialData } from "./store/actions/index";
 
-import { ConnectedTodos } from "./components/todos";
-import { ConnectedGoals } from "./components/goals";
+import  Todos from "./components/todos";
+import Goals from "./components/goals";
 
-class App extends React.Component {
-  componentDidMount() {
-    this.props.dispatch(handleInitialData());
+export default function App() {
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.loading);
+
+  useEffect(() => {
+    dispatch(handleInitialData());
+  }, [dispatch]);
+
+  if (loading) {
+    return <h3> Loading... </h3>;
   }
 
-  render() {
-    const { loading } = this.props;
+  return (
+    <div>
+      <h1> React app </h1>
 
-    if (loading) {
-      return <h3> Loading...</h3>;
-    }
+      <Todos />
 
-    return (
-      <div>
-        <h1> React app </h1>
-
-        <ConnectedTodos />
-
-        <ConnectedGoals />
-      </div>
-    );
-  }
+      <Goals />
+    </div>
+  );
 }
+// class App extends React.Component {
+//   componentDidMount() {
+//     this.props.dispatch(handleInitialData());
+//   }
 
-export const ConnectedApp = connect((state) => ({
-  loading: state.loading,
-}))(App);
+//   render() {
+//     const { loading } = this.props;
+
+//     if (loading) {
+//       return <h3> Loading...</h3>;
+//     }
+
+//     return (
+//       <div>
+//         <h1> React app </h1>
+
+//         <ConnectedTodos />
+
+//         <ConnectedGoals />
+//       </div>
+//     );
+//   }
+// }
