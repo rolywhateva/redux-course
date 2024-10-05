@@ -9,9 +9,11 @@ import './index.css'
 import {createStore} from "redux";
 import {Provider} from "react-redux";
 import reducer from "./reducers";
+import middlware from "./middlewares";
+
 import LoadingBar from 'react-redux-loading-bar';
 
-const store = createStore(reducer);
+const store = createStore(reducer,middlware);
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>

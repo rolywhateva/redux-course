@@ -1,14 +1,22 @@
 import './App.css'
-import {useSelector} from 'react-redux';
-function App() {
+import {useSelector,useDispatch} from 'react-redux';
+import { handleInitialData } from './actions/shared';
+import { useEffect } from 'react';
 
-  const store = useSelector((store)=>store);
-  console.log(store);
+function App() {
+  const dispatch = useDispatch();
+  const loading = useSelector((state)=>state.authedUser == null);
+
+  useEffect(()=>{
+    dispatch(handleInitialData());
+  },[dispatch]);
 
   return (
-    <>
-      <p>  Polls </p>
-    </>
+    <div className='container'>
+    {
+      loading === true ? null: <div> Redux Polls </div>
+    }
+    </div>
   )
 }
 
