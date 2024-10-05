@@ -8,6 +8,17 @@ const TODO_ACTIONS = {
 };
 
 /* Thunks */
+
+const handleAddTodo = (todoName, cb) => (dispatch) => {
+  return API.saveTodo(todoName)
+    .then((newTodo) => {
+      dispatch(todoActionCreators.add(newTodo));
+
+      cb();
+    })
+    .catch(() => alert("There was an error ,try again"));
+};
+
 const handleDeleteTodo = (todo) => {
   return (dispatch) => {
     dispatch(todoActionCreators.remove(todo.id));
@@ -22,6 +33,20 @@ const handleDeleteTodo = (todo) => {
   };
 };
 
+const handleToggleTodo = (todo) => (dispatch) => {
+  const toggle = () => dispatch(todoActionCreators.toggle(todo.id));
+
+  toggle();
+
+  return API.saveTodoToggle(todo.id).catch((reason) => {
+    console.error(reason);
+
+    alert("An error occured, try again!");
+
+    toggle();
+  });
+};
+
 // action creators
 const todoActionCreators = {
   add: (todo) => ({ type: TODO_ACTIONS.ADD_TODO, todo }),
@@ -29,6 +54,8 @@ const todoActionCreators = {
   update: (id, todo) => ({ type: TODO_ACTIONS.UPDATE_TODO, id, todo }),
   toggle: (id) => ({ type: TODO_ACTIONS.TOGGLE_TODO, id }),
   handleDeleteTodo,
+  handleAddTodo,
+  handleToggleTodo,
 };
 
 export { TODO_ACTIONS, todoActionCreators };

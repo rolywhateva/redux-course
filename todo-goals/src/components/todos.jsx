@@ -1,5 +1,4 @@
 import React from "react";
-import API from "goals-todos-api";
 import { todoActionCreators } from "../store/actions/index";
 import { List } from "./list";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,13 +11,12 @@ export default function Todos() {
 
   const addItem = (e) => {
     e.preventDefault();
-    return API.saveTodo(inputRef.current.value)
-      .then((newTodo) => {
-        dispatch(todoActionCreators.add(newTodo));
 
-        this.input.current.value = "";
+    return dispatch(
+      todoActionCreators.handleAddTodo(inputRef.current.value, () => {
+        inputRef.current.value = "";
       })
-      .catch(() => alert("There was an error ,try again"));
+    );
   };
 
   const removeItem = (item) => {
@@ -26,15 +24,7 @@ export default function Todos() {
   };
 
   const toggleItem = (item) => {
-    dispatch(todoActionCreators.toggle(item.id));
-
-    return API.saveTodoToggle(item.id).catch((reason) => {
-      console.error(reason);
-
-      alert("An error occured,  try again!");
-
-      dispatch(todoActionCreators.toggle(item.id));
-    });
+     dispatch(todoActionCreators.handleToggleTodo(item));
   };
 
   return (
