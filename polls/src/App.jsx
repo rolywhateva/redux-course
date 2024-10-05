@@ -6,6 +6,7 @@ import { handleInitialData } from './actions/shared';
 import { useEffect } from 'react';
 import Leaderboard from "./components/Leaderboard";
 import Dashboard from './components/Dashboard';
+import AddPoll from './components/AddPoll';
 function App() {
   const dispatch = useDispatch();
   const loading = useSelector((state)=>state.authedUser == null);
@@ -18,7 +19,7 @@ function App() {
     <Router>
     <div className='container'>
     {
-      loading === true ? null: <div> Redux Polls <Dashboard/> </div>
+      loading === true ? null: <div> Redux Polls <AddPoll/> </div>
     }
     </div>
     </Router>
