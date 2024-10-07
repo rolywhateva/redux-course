@@ -37,6 +37,10 @@
   transition: all 0.15s;
 }
 
+.button:disabled {
+  background-color:lightgray;
+}
+
 .textbox {
   font-size: 32px;
   padding: 2px;

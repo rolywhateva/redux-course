@@ -37,9 +37,21 @@ export const counterSlice = createSlice({
     decrement: state => {
       state.value -= 1
     },
+    multiply: (state, action: PayloadAction<number>) => {
+      state.value *= action.payload
+    },
+    reset: state => {
+      state.value = 0
+    },
+    divide: (state, action: PayloadAction<number>) => {
+      state.value /= action.payload
+    },
     // Use the PayloadAction type to declare the contents of `action.payload`
     incrementByAmount: (state, action: PayloadAction<number>) => {
       state.value += action.payload
+    },
+    subtractByAmount: (state, action: PayloadAction<number>) => {
+      state.value -= action.payload
     },
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -62,7 +74,15 @@ export const counterSlice = createSlice({
 })
 
 // Export the generated action creators for use in components
-export const { increment, decrement, incrementByAmount } = counterSlice.actions
+export const {
+  increment,
+  decrement,
+  incrementByAmount,
+  multiply,
+  reset,
+  subtractByAmount,
+  divide,
+} = counterSlice.actions
 
 // Export the slice reducer for use in the store configuration
 export default counterSlice.reducer
