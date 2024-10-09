@@ -43,30 +43,30 @@ export const counterSlice = createSlice({
       state.value -= 1
     },
     multiply: (state, action: PayloadAction<number>) => {
-      state.value *= action.payload
+      state.value *= action.payload;
     },
     reset: state => {
-      state.value = 0
+      state.value = 0;
     },
     divide: (state, action: PayloadAction<number>) => {
-      state.value /= action.payload
-      state.value = Math.round(state.value * 100) / 100
+      state.value /= action.payload;
+      state.value = Math.round(state.value * 100) / 100;
     },
     // Use the PayloadAction type to declare the contents of `action.payload`
     incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload
+      state.value += action.payload;
     },
     subtractByAmount: (state, action: PayloadAction<number>) => {
-      state.value -= action.payload
+      state.value -= action.payload;
     },
     raiseToPower: (state, action: PayloadAction<number>) => {
-      state.value = state.value ** action.payload
+      state.value = state.value ** action.payload;
     },
     modulo: (state, action: PayloadAction<number>) => {
-      state.value = Math.floor(state.value) % action.payload
+      state.value = Math.floor(state.value) % action.payload;
     },
     negate: (state, action: PayloadAction<number>) => {
-      state.value *= -1
+      state.value *= -1;
     },
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
