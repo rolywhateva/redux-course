@@ -12,12 +12,14 @@ import { fetchCount } from "./counterAPI"
 export interface CounterState {
   value: number
   status: "idle" | "loading" | "failed"
+  operationAmount: number
 }
 
 // Define the initial value for the slice state
 const initialState: CounterState = {
   value: 0,
   status: "idle",
+  operationAmount: 2,
 }
 
 // Slices contain Redux reducer logic for updating state, and
@@ -27,6 +29,9 @@ export const counterSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
+    setOperationAmount: (state, action: PayloadAction<number>) => {
+      state.operationAmount = action.payload
+    },
     increment: state => {
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,
@@ -45,6 +50,7 @@ export const counterSlice = createSlice({
     },
     divide: (state, action: PayloadAction<number>) => {
       state.value /= action.payload
+      state.value = Math.round(state.value * 100) / 100
     },
     // Use the PayloadAction type to declare the contents of `action.payload`
     incrementByAmount: (state, action: PayloadAction<number>) => {
@@ -52,6 +58,15 @@ export const counterSlice = createSlice({
     },
     subtractByAmount: (state, action: PayloadAction<number>) => {
       state.value -= action.payload
+    },
+    raiseToPower: (state, action: PayloadAction<number>) => {
+      state.value = state.value ** action.payload
+    },
+    modulo: (state, action: PayloadAction<number>) => {
+      state.value = Math.floor(state.value) % action.payload
+    },
+    negate: (state, action: PayloadAction<number>) => {
+      state.value *= -1
     },
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -82,6 +97,9 @@ export const {
   reset,
   subtractByAmount,
   divide,
+  raiseToPower,
+  modulo,
+  setOperationAmount,
 } = counterSlice.actions
 
 // Export the slice reducer for use in the store configuration
@@ -92,6 +110,9 @@ export default counterSlice.reducer
 // in a component, or inside the `createSlice.selectors` field.
 export const selectCount = (state: RootState) => state.counter.value
 export const selectStatus = (state: RootState) => state.counter.status
+export const selectIsLoading = (state:RootState)=> state.counter.status === "loading";
+export const selectOperationAmount = (state: RootState) =>
+  state.counter.operationAmount
 
 // The function below is called a thunk, which can contain both sync and async logic
 // that has access to both `dispatch` and `getState`. They can be dispatched like
@@ -101,6 +122,15 @@ export const incrementIfOdd = (amount: number): AppThunk => {
   return (dispatch, getState) => {
     const currentValue = selectCount(getState())
     if (currentValue % 2 === 1) {
+      dispatch(incrementByAmount(amount))
+    }
+  }
+}
+
+export const incrementIfEven = (amount: number): AppThunk => {
+  return (dispatch, getState) => {
+    const currentValue = selectCount(getState())
+    if (currentValue % 2 === 0) {
       dispatch(incrementByAmount(amount))
     }
   }

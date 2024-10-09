@@ -1,5 +1,3 @@
-import { useState } from "react"
-
 // Use pre-typed versions of the React-Redux
 // `useDispatch` and `useSelector` hooks
 import { useAppDispatch, useAppSelector } from "@/app/hooks"
@@ -11,131 +9,84 @@ import {
   incrementByAmount,
   incrementIfOdd,
   selectCount,
-  selectStatus,
   reset,
   subtractByAmount,
   divide,
+  incrementIfEven,
+  raiseToPower,
+  modulo,
+  selectOperationAmount,
+  setOperationAmount,
+  selectIsLoading,
 } from "./counterSlice"
 
 import styles from "./Counter.module.css"
+import { IOperationButtonProps, OperationButton } from "./OperationButton"
+
+const operationButtons: IOperationButtonProps[] = [
+  { text: "Add amount", actionCreator: incrementByAmount },
+  { text: "Subtract amount", actionCreator: subtractByAmount },
+  { text: "Multiply by amount", actionCreator: multiply },
+  { text: "Raise to the power of", actionCreator: raiseToPower },
+  { text: "Divide", actionCreator: divide },
+  { text: "Modulo", actionCreator: modulo },
+]
+
+const condititionalOperationsButtons: IOperationButtonProps[] = [
+  { text: "Add async", actionCreator: incrementAsync },
+  { text: "Add if odd", actionCreator: incrementIfOdd },
+  { text: "Increment if even", actionCreator: incrementIfEven },
+]
+
+const mapOperations = (operations: IOperationButtonProps[], name: string) =>
+  operations.map((operation, index) => (
+    <OperationButton key={`${name}${index}`} {...operation} />
+  ))
 
 export const Counter = () => {
   const dispatch = useAppDispatch()
   const count = useAppSelector(selectCount)
-  const status = useAppSelector(selectStatus)
-  const isDisabled = status === "loading";
-  const [incrementAmount, setIncrementAmount] = useState("2")
+  const modifyingValue = useAppSelector(selectOperationAmount)
+  const isDisabled = useAppSelector(selectIsLoading)
 
-  const incrementValue = Number(incrementAmount) || 0;
-
+  console.count("Counter re-render")
   return (
     <div>
       <div className={styles.row}>
-        <button
-          className={styles.button}
-          aria-label="Decrement value"
-          onClick={() => {
-            dispatch(decrement())
-          }}
-          disabled={isDisabled}
-        >
-          -
-        </button>
+        <OperationButton actionCreator={decrement} text="-" />
+
         <span aria-label="Count" className={styles.value}>
           {count}
         </span>
-        <button
-          className={styles.button}
-          aria-label="Increment value"
-          onClick={() => {
-            dispatch(increment())
-          }}
-          disabled={isDisabled}
-        >
-          +
-        </button>
+
+        <OperationButton actionCreator={increment} text="+" />
       </div>
+
+      <div className={styles.row}>
+        <OperationButton actionCreator={reset} text="Reset" />
+      </div>
+
       <div className={styles.row}>
         <input
           className={styles.textbox}
           aria-label="Set increment amount"
-          value={incrementAmount}
+          value={modifyingValue}
           type="number"
           onChange={e => {
-            setIncrementAmount(e.target.value)
+            dispatch(setOperationAmount(+e.target.value))
           }}
           disabled={isDisabled}
-
         />
-        <button
-          className={styles.button}
-          onClick={() => {
-            dispatch(incrementByAmount(incrementValue))
-          }}
-          disabled={isDisabled}
-        >
-          Add Amount
-        </button>
 
-        <button
-          className={styles.button}
-          onClick={() => {
-            dispatch(subtractByAmount(incrementValue))
-          }}
-          disabled={isDisabled}
-        >
-          Subtract  Amount
-        </button>
-
-        <button
-          className={styles.button}
-          onClick={() => {
-            dispatch(multiply(incrementValue))
-          }}
-          disabled={isDisabled}
-        >
-          Multiply
-        </button>
-
-        <button
-          className={styles.button}
-          onClick={() => {
-            dispatch(divide(incrementValue))
-          }}
-          disabled={isDisabled}
-        >
-          Divide
-        </button>
-
-        <button
-          className={styles.button}
-          onClick={() => {
-            dispatch(reset())
-          }}
-          disabled={isDisabled}
-        >
-          Reset
-        </button>
+        {mapOperations(operationButtons, "operationButtons")}
       </div>
+
       <div className={styles.row}>
-        <button
-          className={styles.asyncButton}
-          disabled={status !== "idle"}
-          onClick={() => {
-            dispatch(incrementAsync(incrementValue))
-          }}
-        >
-          Add Async
-        </button>
-        <button
-          className={styles.oddButton}
-          disabled={isDisabled}
-          onClick={() => {
-            dispatch(incrementIfOdd(incrementValue))
-          }}
-        >
-          Add If Odd
-        </button>
+     
+        {mapOperations(
+          condititionalOperationsButtons,
+          "conditionalOperationButtons",
+        )}
       </div>
     </div>
   )
