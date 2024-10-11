@@ -49,7 +49,6 @@ export const Counter = () => {
   const modifyingValue = useAppSelector(selectOperationAmount)
   const isDisabled = useAppSelector(selectIsLoading)
 
-  console.count("Counter re-render")
   return (
     <div>
       <div className={styles.row}>

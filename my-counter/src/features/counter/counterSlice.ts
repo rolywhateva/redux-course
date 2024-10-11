@@ -102,6 +102,7 @@ export const {
   setOperationAmount,
 } = counterSlice.actions
 
+
 // Export the slice reducer for use in the store configuration
 export default counterSlice.reducer
 
