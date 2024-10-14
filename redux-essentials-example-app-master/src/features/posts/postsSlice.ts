@@ -1,24 +1,34 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface Post {
-    id:string;
-    title:string;
-    content:string;
+  id: string
+  title: string
+  content: string
 }
 
 const initialState: Post[] = [
-    {
-        id:'1',title:"First post!", content: "Hello!"
-    },
-    {
-        id:'2', title:"Second post!",content:"More text"
-    }
-];
+  {
+    id: '1',
+    title: 'First post!',
+    content: 'Hello!',
+  },
+  {
+    id: '2',
+    title: 'Second post!',
+    content: 'More text',
+  },
+]
 
 const postsSlice = createSlice({
-    name:'posts',
-    initialState,
-    reducers:{}
+  name: 'posts',
+  initialState,
+  reducers: {
+    postAdded(state, action: PayloadAction<Post>) {
+      state.push(action.payload)
+    },
+  },
 })
 
-export default postsSlice.reducer;
+export const { postAdded } = postsSlice.actions
+
+export default postsSlice.reducer
