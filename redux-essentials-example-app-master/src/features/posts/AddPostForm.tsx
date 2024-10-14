@@ -23,13 +23,7 @@ export const AddPostForm = () => {
 
     console.log('Values', { title, content })
    
-    const newPost: Post = {
-        id: nanoid(),
-        title,
-        content
-    };
-
-    dispatch(postAdded(newPost));
+    dispatch(postAdded(title,content));
     e.currentTarget.reset()
   }
 
