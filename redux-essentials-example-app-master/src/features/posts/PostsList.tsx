@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { selectAllPosts } from './postsSlice'
 import { PostAuthor } from './PostAuthor';
 import { TimeAgo } from '@/components/TimeAgo';
+import { ReactionButtons } from './ReactionButtons';
 
 export const PostsList = () => {
   const posts = useAppSelector(selectAllPosts);
@@ -19,6 +20,8 @@ export const PostsList = () => {
       <PostAuthor userId={post.user} />
 
       <TimeAgo timestamp={post.date}/>
+
+      <ReactionButtons post={post}/>
       
       <Link to={`/editPost/${post.id}`}  className='button'> Edit Post </Link>
     </article>
