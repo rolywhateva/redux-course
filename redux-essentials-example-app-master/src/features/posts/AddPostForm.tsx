@@ -1,6 +1,5 @@
 import { useDispatch } from 'react-redux'
-import { Post, postAdded } from './postsSlice'
-import { nanoid } from '@reduxjs/toolkit'
+import { postAdded } from './postsSlice'
 import { useAppSelector } from '@/hooks'
 import { selectAllUsers } from '../users/usersSlice'
 
