@@ -23,7 +23,7 @@ export const PostsList = () => {
 
       <ReactionButtons post={post}/>
       
-      <Link to={`/editPost/${post.id}`}  className='button'> Edit Post </Link>
+      {/* <Link to={`/editPost/${post.id}`}  className='button'> Edit Post </Link> */}
     </article>
   ))
 
