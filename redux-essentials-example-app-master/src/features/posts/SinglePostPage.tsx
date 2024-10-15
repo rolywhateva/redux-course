@@ -2,6 +2,7 @@ import { useAppSelector } from '@/hooks'
 import { useParams } from 'react-router-dom'
 import { selectPostById } from './postsSlice'
 import { PostAuthor } from './PostAuthor'
+import { TimeAgo } from '@/components/TimeAgo'
 
 export const SinglePostPage = () => {
   const { postId } = useParams()
@@ -24,6 +25,8 @@ export const SinglePostPage = () => {
         <p className="post-content">{post.content}</p>
 
         <PostAuthor userId={post.user} />
+
+        <TimeAgo timestamp={post.date}/>
       </article>
     </section>
   )
