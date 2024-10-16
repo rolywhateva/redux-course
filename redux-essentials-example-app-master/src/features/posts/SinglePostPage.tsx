@@ -21,10 +21,7 @@ export const SinglePostPage = () => {
     )
   }
 
-
-
   const canEdit = currentUsername === post!.user
-
 
   return (
     <section>
