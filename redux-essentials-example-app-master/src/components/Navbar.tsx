@@ -1,12 +1,12 @@
 import { userLoggedOut } from '@/features/auth/authSlice';
 import { selectCurrentUser } from '@/features/users/usersSlice';
-import { useAppDisatch, useAppSelector } from '@/hooks'
+import { useAppDispatch, useAppSelector } from '@/hooks'
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { UserIcon } from './UserIcon';
 
 export const Navbar = () => {
-  const dispatch = useAppDisatch();
+  const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
   const isLoggedIn = !!user;
 

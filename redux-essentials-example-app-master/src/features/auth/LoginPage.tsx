@@ -1,4 +1,4 @@
-import { useAppDisatch, useAppSelector } from '@/hooks'
+import { useAppDispatch, useAppSelector } from '@/hooks'
 import { selectAllUsers } from '../users/usersSlice'
 import { useNavigate } from 'react-router-dom'
 import { userLoggedIn } from './authSlice'
@@ -12,7 +12,7 @@ interface LoginPageFormElements extends HTMLFormElement {
 }
 
 export const LoginPage = () => {
-  const dispatch = useAppDisatch()
+  const dispatch = useAppDispatch()
   const users = useAppSelector(selectAllUsers)
   const navigate = useNavigate()
 
