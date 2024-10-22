@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '@/hooks'
 import { selectAllUsers } from '../users/usersSlice'
 import { useNavigate } from 'react-router-dom'
-import { userLoggedIn } from './authSlice'
+import { login } from './authSlice'
 
 interface LoginPageFormFields extends HTMLFormControlsCollection {
   username: HTMLSelectElement
@@ -16,12 +16,12 @@ export const LoginPage = () => {
   const users = useAppSelector(selectAllUsers)
   const navigate = useNavigate()
 
-  const handleSubmit = (e: React.FocusEvent<LoginPageFormElements>) => {
+  const handleSubmit = async (e: React.FocusEvent<LoginPageFormElements>) => {
     e.preventDefault()
 
     const username = e.currentTarget.elements.username.value
 
-    dispatch(userLoggedIn(username))
+    await dispatch(login(username));
 
     navigate('/posts')
   }

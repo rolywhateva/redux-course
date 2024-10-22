@@ -1,7 +1,7 @@
 import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit'
-import { userLoggedOut } from '../auth/authSlice'
 import { client } from '@/api/client'
 import { createAppAsyncThunk } from '@/withTypes'
+import { logout } from '../auth/authSlice'
 
 export interface Reactions {
   thumbsUp: number
@@ -94,14 +94,15 @@ const postsSlice = createSlice({
     selectPostById: (postsState, postId: string) => postsState.posts.find((post) => post.id === postId),
     selectPostsStatus: (postsState) => postsState.status,
     selectPostsError: (postsState) => postsState.error,
+    selectPostsByUser : (postsState,userId:string)=> postsState.posts.filter(post=>post.user === userId)
   },
 
   extraReducers: (builder) => {
     builder
-      .addCase(userLoggedOut, (state) => {
+      .addCase(logout.fulfilled, () => {
         return initialState
       })
-      .addCase(fetchPosts.pending, (state, action) => {
+      .addCase(fetchPosts.pending, (state) => {
         state.status = 'pending'
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
@@ -118,5 +119,5 @@ const postsSlice = createSlice({
 })
 
 export const { postUpdated, reactionAdded } = postsSlice.actions
-export const { selectAllPosts, selectPostById, selectPostsStatus, selectPostsError } = postsSlice.selectors
+export const { selectAllPosts, selectPostById, selectPostsStatus, selectPostsError,selectPostsByUser } = postsSlice.selectors
 export default postsSlice.reducer
