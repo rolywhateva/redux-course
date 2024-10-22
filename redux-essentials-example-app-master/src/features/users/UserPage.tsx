@@ -13,8 +13,7 @@ export const UserPage = () => {
   if (!user) {
     return (
       <section>
-        {' '}
-        <h2> User not found! </h2>{' '}
+        <h2> User not found! </h2>
       </section>
     )
   }
