@@ -53,13 +53,13 @@ export const fetchPosts = createAppAsyncThunk(
 )
 
 type PostUpdate = Pick<Post, 'id' | 'title' | 'content'>
-export type NewPost = Pick<Post,'title'|'content'|'user'>;
+export type NewPost = Pick<Post, 'title' | 'content' | 'user'>
 
-export const addNewPost = createAppAsyncThunk('posts/addNewPost', async (initialPost: NewPost)=>{
-  const response = await client.post<Post>('/fakeApi/posts',initialPost);
+export const addNewPost = createAppAsyncThunk('posts/addNewPost', async (initialPost: NewPost) => {
+  const response = await client.post<Post>('/fakeApi/posts', initialPost)
 
-  return response.data;
-});
+  return response.data
+})
 
 const initialState: PostsState = {
   posts: [],
@@ -94,7 +94,7 @@ const postsSlice = createSlice({
     selectPostById: (postsState, postId: string) => postsState.posts.find((post) => post.id === postId),
     selectPostsStatus: (postsState) => postsState.status,
     selectPostsError: (postsState) => postsState.error,
-    selectPostsByUser : (postsState,userId:string)=> postsState.posts.filter(post=>post.user === userId)
+    selectPostsByUser: (postsState, userId: string) => postsState.posts.filter((post) => post.user === userId),
   },
 
   extraReducers: (builder) => {
@@ -112,12 +112,14 @@ const postsSlice = createSlice({
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message ?? 'Unknown error'
-      }).addCase(addNewPost.fulfilled,(state,action)=>{
-        state.posts.push(action.payload);
+      })
+      .addCase(addNewPost.fulfilled, (state, action) => {
+        state.posts.push(action.payload)
       })
   },
 })
 
 export const { postUpdated, reactionAdded } = postsSlice.actions
-export const { selectAllPosts, selectPostById, selectPostsStatus, selectPostsError,selectPostsByUser } = postsSlice.selectors
+export const { selectAllPosts, selectPostById, selectPostsStatus, selectPostsError, selectPostsByUser } =
+  postsSlice.selectors
 export default postsSlice.reducer
