@@ -1,26 +1,17 @@
-import { useAppDispatch, useAppSelector } from '@/hooks'
 import { Link } from 'react-router-dom'
-import {
-  fetchPosts,
-  selectAllPosts,
-  selectPostById,
-  selectPostIds,
-  selectPostsError,
-  selectPostsStatus,
-} from './postsSlice'
+import { Post } from './postsSlice'
 import { PostAuthor } from './PostAuthor'
 import { TimeAgo } from '@/components/TimeAgo'
 import { ReactionButtons } from './ReactionButtons'
-import { useEffect } from 'react'
 import { Spinner } from '@/components/Spinner'
+import { useGetPostsQuery } from '../api/apiSlice'
+import React, { useMemo } from 'react'
 
 interface PostExcerptProps {
-  postId: string
+  post: Post
 }
 
-export const PostExcerpt = ({ postId }: PostExcerptProps) => {
-  const post = useAppSelector((state) => selectPostById(state, postId))
-
+export const PostExcerpt = ({ post }: PostExcerptProps) => {
   return (
     <article key={post.id} className="post-excerpt">
       <h3>
@@ -34,30 +25,35 @@ export const PostExcerpt = ({ postId }: PostExcerptProps) => {
       <TimeAgo timestamp={post.date} />
 
       <ReactionButtons post={post} />
-
     </article>
   )
 }
 
 export const PostsList = () => {
-  const dispatch = useAppDispatch()
-  const orderedPostIds = useAppSelector(selectPostIds)
-  const postsStatus = useAppSelector(selectPostsStatus)
-  const postsError = useAppSelector(selectPostsError)
+  const { data: posts = [], isLoading, isSuccess, isError, error } = useGetPostsQuery()
 
-  useEffect(() => {
-    postsStatus === 'idle' && dispatch(fetchPosts())
-  }, [postsStatus, dispatch])
+  const sortedPosts = useMemo(()=>{
+     const sortedPosts = posts.slice();
+     
+     sortedPosts.sort((a,b)=>b.date.localeCompare(a.date));
+     return sortedPosts;
+
+  },[posts]);
+  let content: React.ReactNode
+
+  if (isLoading) {
+    content = <Spinner text="Loading..." />
+  } else if (isSuccess) {
+    content = sortedPosts.map((post) => <PostExcerpt key={post.id} post={post} />)
+  } else if (isError) {
+    content = <div> {error.toString()} </div>
+  }
 
   return (
     <section className="posts-list">
       <h2> Posts </h2>
 
-      {postsStatus === 'pending' && <Spinner text="Loading..." />}
-
-      {postsStatus === 'rejected' && <div> {postsError} </div>}
-
-      {postsStatus === 'succeeded' && orderedPostIds.map((postId) => <PostExcerpt key={postId} postId={postId} />)}
+      {content}
     </section>
   )
 }
