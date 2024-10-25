@@ -4,6 +4,7 @@ import { createAppAsyncThunk } from '@/withTypes'
 import { logout } from '../auth/authSlice'
 import { RootState } from '@/store'
 import { AppStartListening } from '@/listenerMiddleware'
+import { apiSlice } from '../api/apiSlice'
 
 export interface Reactions {
   thumbsUp: number
@@ -62,7 +63,7 @@ export const fetchPosts = createAppAsyncThunk(
   },
 )
 
-type PostUpdate = Pick<Post, 'id' | 'title' | 'content'>
+export type PostUpdate = Pick<Post, 'id' | 'title' | 'content'>
 export type NewPost = Pick<Post, 'title' | 'content' | 'user'>
 
 export const addNewPost = createAppAsyncThunk('posts/addNewPost', async (initialPost: NewPost) => {
@@ -134,7 +135,7 @@ export default postsSlice.reducer
 
 export const addPostsListeners = (startAppListening: AppStartListening)=> {
   startAppListening({
-    actionCreator: addNewPost.fulfilled,
+    matcher:apiSlice.endpoints.addNewPost.matchFulfilled,
     effect:  async (action, listenerApi)=>{
       const {toast} = await import ('react-tiny-toast');
 

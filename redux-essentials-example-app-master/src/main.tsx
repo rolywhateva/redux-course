@@ -9,7 +9,7 @@ import './primitiveui.css'
 import './index.css'
 import { Provider } from 'react-redux'
 import { store } from './store'
-import { fetchUsers } from './features/users/usersSlice'
+import { apiSliceWithUsers } from './features/users/usersSlice'
 
 // Wrap app rendering so we can wait for the mock API to initialize
 async function start() {
@@ -18,7 +18,7 @@ async function start() {
 
   const root = createRoot(document.getElementById('root')!)
 
-  store.dispatch(fetchUsers());
+  store.dispatch(apiSliceWithUsers.endpoints.getUsers.initiate())
   root.render(
     <React.StrictMode>
       <Provider store={store}>

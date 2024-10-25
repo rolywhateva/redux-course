@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/hooks'
-import { allNotificationsRead, selectAllNotifications } from './notificationsSlice'
+import { allNotificationsRead, selectMetadataEntities, useGetNotificationsQuery } from './notificationsSlice'
 import { PostAuthor } from '../posts/PostAuthor'
 import { TimeAgo } from '@/components/TimeAgo'
 import { useLayoutEffect } from 'react'
@@ -8,15 +8,19 @@ import classnames from 'classnames';
 export const NotificationsList = () => {
     const dispatch = useAppDispatch();
     
-  const notifications = useAppSelector(selectAllNotifications)
+  const {data:notifications = []} = useGetNotificationsQuery();
+  const notificationsMetadata = useAppSelector(selectMetadataEntities);
 
   useLayoutEffect(()=>{
     dispatch(allNotificationsRead());
   })
+
   const renderedNotifications = notifications.map((notification) => {
+    const metadata = notificationsMetadata[notification.id];
+
     const notificationClassname = classnames('notification', {
-        new: notification.isNew
-      })
+        new: metadata.isNew
+      })      
 
     return (
       <div key={notification.id} className={notificationClassname}>
